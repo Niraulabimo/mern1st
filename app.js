@@ -8,3 +8,9 @@ app.listen(3000, () => {
 app.get("/", (req, res) => {
   res.json("hello");
 });
+
+app.get("/about", (req, res) => {
+  res.json({
+    message: "this is about page",
+  });
+});
