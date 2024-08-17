@@ -20,5 +20,5 @@ const blogSchema= new Schema({
 })
 // blog is table, blogschema column
 const Blog =mongoose.model('Blog',blogSchema)
-module.exports =Blog
+module.exports =Blog;
 
