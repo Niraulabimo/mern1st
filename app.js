@@ -20,7 +20,12 @@ app.post("/blog",async (req,res)=>{
   
 
   //object destructuring 
-  const {title,subtitle, description,image}=req.body
+  const {title,subtitle, description,image}=req.body;
+  if(!title || !description || !subtitle || !image){
+    return res.status(400).json({
+      message:"Plese provide title,description,subtitle,image "
+    })
+  }
   //create is an orm method to put data in table
   await Blog.create({
     title:title,
@@ -28,6 +33,7 @@ app.post("/blog",async (req,res)=>{
     subtitle:subtitle,
     image:image
   })
+ 
 
   res.status(200).json({
     message: "Blog hit successfully"
