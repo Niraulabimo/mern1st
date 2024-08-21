@@ -24,8 +24,9 @@ app.post("/blog",upload.single('image') ,async (req,res)=>{
   
 
   //object destructuring 
-  const {title,subtitle, description,image}=req.body;
-  if(!title || !description || !subtitle || !image){
+  const {title,subtitle, description}=req.body;
+  const filename = req.file.filename;
+  if(!title || !description || !subtitle){
     return res.status(400).json({
       message:"Plese provide title,description,subtitle,image "
     })
@@ -35,15 +36,25 @@ app.post("/blog",upload.single('image') ,async (req,res)=>{
     title:title,
     description:description,
     subtitle:subtitle,
-    image:image
+    image: filename
+   
   })
  
 
   res.status(200).json({
-    message: "Blog hit successfully"
+    message: "Blog api hit successfully"
   })
 })
 
+app.get("/blog",async(req,res)=>{
+  const blogs= await Blog.find()  // returns array
+  res.status(200).json({
+    message:"Blogs fetched successfully",
+    data:blogs
+  })
+})
+
+app.use(express.static('./Storage'))
 
 
 //mongodb+srv://bimo:<password>@cluster0.xotox6l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
