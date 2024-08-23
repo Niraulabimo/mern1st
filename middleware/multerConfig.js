@@ -4,7 +4,7 @@ const storage=multer.diskStorage({
         cb(null,'./Storage')//cb(error,success)
     },
     filename: function(req,file,cb){
-        cb(null,"bimo-"+ file.originalname)
+        cb(null,Date.now()+"-" + file.originalname)
     }
 })
 module.exports={multer,storage}

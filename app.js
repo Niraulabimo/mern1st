@@ -2,6 +2,8 @@ const express = require("express");
 require("dotenv").config();
 const connectToDatabase = require("./database");
 const Blog= require("./model/blogModel.js");
+const fs= require('fs')
+
 
 const { storage,multer } = require("./middleware/multerConfig.js");
 const upload =multer({storage:storage})
@@ -77,14 +79,57 @@ app.get("/blog/:id", async(req,res)=>{
 
 //delete the blog
 app.delete("/blog/:id",async(req,res)=>{
-    const id= req.params.id;  
+    const id= req.params.id;
+    const blog = await Blog.findById(id)
+    const imageName= blog.image
+    
+    fs.unlink(`Storage/${imageName}`,(error)=>{
+      if(error){
+      console.log(error)
+      }else{
+        console.log("file deleted successfully")
+      }
+    })
+    
    await Blog.findByIdAndDelete(id)
   res.status(200).json({
     message:"Blog deleted successlully"
   })
 })
 
+//updateblog
+app.patch("/blog/:id",upload.single('image'), async(req,res)=>{
+  const id=req.params.id  //like get(params)
+  const{title,subtitle,description}=req.body  //like post (body) to edit
+  let imageName;
+  if(req.file){
+    imageName=req.file.filename
+    const blog = await Blog.findById(id)
+    const oldImageName= blog.image
+    
+    fs.unlink(`Storage/${oldImageName}`,(error)=>{
+      if(error){
+      console.log(error)
+      }else{
+        console.log("file deleted successfully")
+      }
 
-//
+  })
+}
+  await Blog.findByIdAndUpdate(id,{
+    title:title,
+    description:description,
+    subtitle:subtitle,
+    image:imageName
+  })
+  res.status(200).json({
+    message:"Blog updated successfully"
+  })
+
+})
+
+
+
+
 
 //mongodb+srv://bimo:<password>@cluster0.xotox6l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
