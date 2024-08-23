@@ -46,6 +46,10 @@ app.post("/blog",upload.single('image') ,async (req,res)=>{
   })
 })
 
+app.use(express.static('./Storage'))//path from where we can see only images from url
+
+
+// fetch all blog
 app.get("/blog",async(req,res)=>{
   const blogs= await Blog.find()  // returns array
   res.status(200).json({
@@ -54,7 +58,33 @@ app.get("/blog",async(req,res)=>{
   })
 })
 
-app.use(express.static('./Storage'))
+//fetch single blog
+app.get("/blog/:id", async(req,res)=>{
+  const id= req.params.id;
+  const blog= await Blog.findById(id)//object
+  if(!blog){
+    return res.status(400).json({
+      message:"no data found"
+    })
+  }
 
+    res.status(200).json({
+      message:"Fetched successfully",
+      data:blog
+    })
+
+})
+
+//delete the blog
+app.delete("/blog/:id",async(req,res)=>{
+    const id= req.params.id;  
+   await Blog.findByIdAndDelete(id)
+  res.status(200).json({
+    message:"Blog deleted successlully"
+  })
+})
+
+
+//
 
 //mongodb+srv://bimo:<password>@cluster0.xotox6l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
